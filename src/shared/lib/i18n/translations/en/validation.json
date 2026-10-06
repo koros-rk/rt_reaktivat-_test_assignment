@@ -1,0 +1,26 @@
+{
+  "sign-in": {
+    "user": {
+      "nonempty": "User is required"
+    }
+  },
+  "create-book": {
+    "book": {
+      "name": {
+        "nonempty": "Book title is required"
+      },
+      "author": {
+        "nonempty": "Author is required"
+      },
+      "fields": {
+        "name": {
+          "nonempty": "Property name is required",
+          "duplicate": "Property names must be unique"
+        },
+        "value": {
+          "nonempty": "Property value is required"
+        }
+      }
+    }
+  }
+}
