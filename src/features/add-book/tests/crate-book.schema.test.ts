@@ -65,6 +65,7 @@ describe("CreateBookSchema", () => {
   });
 
   it("missing user → error at ['user']", () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { user: _omit, ...withoutUser } = valid;
     const r = CreateBookSchema.safeParse(withoutUser);
     expect(r.success).toBe(false);

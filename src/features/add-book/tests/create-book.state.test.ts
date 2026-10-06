@@ -3,13 +3,13 @@ import { describe, expect, it } from "vitest";
 import { UserStorage } from "../../../entities/user/storage/user-storage.repository";
 import { signIn } from "../../../shared/testing/utils/test-utils";
 import {
-  getInitialCreateBookState,
   InitialCreateBookState,
+  useInitialCreateBookState,
 } from "../model/create-book.state";
 
-const render = () => renderHook(() => getInitialCreateBookState());
+const render = () => renderHook(() => useInitialCreateBookState());
 
-describe("getInitialCreateBookState", () => {
+describe("useInitialCreateBookState", () => {
   it("takes user from UserStorage", () => {
     signIn("alice");
     expect(render().result.current.user).toBe("alice");

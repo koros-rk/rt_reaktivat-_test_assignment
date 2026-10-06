@@ -19,7 +19,7 @@ i18next · notistack · ts-pattern · Vitest
    npm install
    ```
 
-2. Configure the API (see `.env.example`)
+2. Configure the API
 
    ```bash
    VITE_API_BASE_URL=https://tdd.demo.reaktivate.com/v1
@@ -32,7 +32,7 @@ i18next · notistack · ts-pattern · Vitest
 4. Run
 
    ```bash
-   npm run dev      # start the app
+   npm run start      # start the app
    npm test         # run the tests
    ```
 
@@ -43,15 +43,15 @@ i18next · notistack · ts-pattern · Vitest
 
 ## Requirements coverage
 
-| Requirement | Where / how |
-| --- | --- |
+| Requirement | Where / how                                                                                                                                                                                                                        |
+| --- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Zero logic and calculations in TSX | Every component with logic has a controller (`*.controller.ts`, or the form hook). Views only call the controller and render what it returns. Branching on state is done with *state → component maps*, not `if`/ternaries in JSX. |
-| MVP / MVVM with controllers | See [Architecture](#architecture). A controller is a custom hook that owns the logic and returns a ready-to-render view model. |
-| MobX or own MVVM | Own implementation on TanStack Query + Zustand + TanStack Form. Motivation in [Key decisions](#key-decisions-and-motivation). |
-| Books creation | `features/add-book`: a modal with a TanStack Form, Zod validation, dynamic custom properties. |
-| Tests on logic | See [Testing](#testing). |
-| Part 2a — All / Private switch | `features/books-selector`. The two options are mutually exclusive (`aria-pressed` buttons). The mode lives in a Zustand store and is part of the query key. |
-| Part 2b — sticky header with a private books counter | `widgets/header`. The counter reads the *private* books query, so it does not depend on the selected mode and updates after create/reset. |
+| MVP / MVVM with controllers | See [Architecture](#architecture). A controller is a custom hook that owns the logic and returns a ready-to-render view model.                                                                                                     |
+| MobX or own MVVM | Own implementation on TanStack Query + Zustand + TanStack Form. Motivation in [Key decisions](#key-decisions-and-motivation).                                                                                                      |
+| Books creation | `features/add-book`: a modal with a TanStack Form, Zod validation, dynamic custom properties.                                                                                                                                      |
+| Tests on logic | See [Testing](#testing).                                                                                                                                                                                                           |
+| Part 2a — All / Private switch | `widgets/books-selector`. The two options are mutually exclusive (`aria-pressed` buttons). The mode lives in a Zustand store and is part of the query key.                                                                         |
+| Part 2b — sticky header with a private books counter | `widgets/header`. The counter reads the *private* books query, so it does not depend on the selected mode and updates after create/reset.                                                                                          |
 
 Coding-guideline checklist:
 
@@ -89,15 +89,15 @@ View ──actions──▶ Controller ──PM──▶ Repository ──DTO─
   ◀──VM (observable)──┘
 ```
 
-| Scheme | In this project |
-| --- | --- |
-| **View** | `ui/*.tsx` — functional components, JSX only |
-| **Controller** | `model/*.controller.ts` and form hooks (`create-book.form.ts`, `sign-in.form.ts`) |
-| **VM (observable)** | the object a controller returns (values from Zustand / TanStack Query are reactive) |
-| **PM** (programmer's model) | types inferred from Zod schemas (`Book`, `CreateBook`, …) |
+| Scheme | In this project                                                                                   |
+| --- |---------------------------------------------------------------------------------------------------|
+| **View** | `ui/*.tsx` — functional components, JSX only                                                      |
+| **Controller** | `model/*.controller.ts` and form hooks (`create-book.form.ts`, `sign-in.form.ts`)                 |
+| **VM (observable)** | the object a controller returns (values from Zustand / TanStack Query are reactive)               |
+| **PM** (programmer's model) | types inferred from Zod schemas (`Book`, `CreateBook`, …)                                         |
 | **Repository** | `entities/*/queries`, `mutations`, `contracts` and the Zustand stores (`*-storage.repository.ts`) |
-| **DTO** | request/response Zod schemas in `entities/*/schemas` |
-| **Service / gateway** | the Axios instance in `app/integrations/api-client.ts` |
+| **DTO** | request/response Zod schemas in `entities/*/schemas`                                              |
+| **Service / gateway** | the Axios instance in `sshared/api/api-client.ts`                                                 |
 
 ### Data flow
 
@@ -158,7 +158,7 @@ a snackbar. Validation messages for forms are resolved by `form id + field path 
 
 The test strategy follows the point of the task: *fast tests on logic, without rendering UI*.
 
-- **Runner:** Vitest. Pure logic runs in the `node` environment; hooks use `jsdom` + `@testing-library/react`
+- **Runner:** Vitest. Logic runs in the `jsdom` + `@testing-library/react` environment.
   (`renderHook`).
 - **Location:** tests live next to the code they cover, following the slice structure.
     Shared helpers (test `QueryClient`, provider wrapper, API mocks) are in `src/shared/testing/`.

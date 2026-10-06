@@ -18,7 +18,7 @@ export const createInitialCreateBookState = (): CreateBook => ({
   book: { ...InitialCreateBookState.book, id: getShortId(), fields: [] },
 });
 
-export const getInitialCreateBookState = () => {
+export const useInitialCreateBookState = () => {
   const [state] = useState(createInitialCreateBookState);
 
   return state;

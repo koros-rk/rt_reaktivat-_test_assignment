@@ -32,7 +32,7 @@ const pipeInterceptors = (issue: z.core.$ZodIssue): string => {
 };
 
 export const prettifyZodError: PrettifyZodIssue = (error, namespace) => {
-  const { path, code, ...rest } = error;
+  const { path, ...rest } = error;
 
   const formatted_path = path
     .filter((p) => !Number.isInteger(Number(p)))

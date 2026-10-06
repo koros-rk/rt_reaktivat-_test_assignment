@@ -9,7 +9,7 @@ const screens = {
 };
 
 export const Header = () => {
-  const { user } = useUserStorage();
+  const user = useUserStorage((state) => state.user);
   const Screen = screens[user ? "authorized" : "unauthorized"];
 
   return (

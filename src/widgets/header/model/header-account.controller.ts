@@ -17,7 +17,7 @@ export const useHeaderAccountController = () => {
   return {
     user,
     count: PrivateBooks.data,
-    loading: PrivateBooks.isPending,
+    loading: PrivateBooks.isFetching,
     onExit: () => mutate(),
   };
 };

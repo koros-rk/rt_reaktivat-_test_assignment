@@ -59,6 +59,7 @@ describe("GetBooksResponseSchema", () => {
   });
 
   it("rejects an item without author (issue path points to the item)", () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { author: _omit, ...broken } = buildBook();
     const r = GetBooksResponseSchema.safeParse([buildBook(), broken]);
     expect(r.success).toBe(false);
@@ -76,6 +77,7 @@ describe("CreateBookRequestSchema", () => {
   });
 
   it("validates book through BookSchema (missing author → error)", () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { author: _omit, ...broken } = buildBook();
     const r = CreateBookRequestSchema.safeParse({
       user: "alice",

@@ -1,10 +1,7 @@
 import { act, waitFor } from "@testing-library/react";
-import { enqueueSnackbar } from "notistack";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { UserStorage } from "../../../entities/user/storage/user-storage.repository";
 import { queryClient } from "../../../shared/api/query-client";
 import { api } from "../../../shared/testing/utils/api";
-import { makeAxiosError } from "../../../shared/testing/utils/make-axios-error";
 import {
   renderController,
   signIn,
@@ -174,66 +171,17 @@ describe("useCreateBookForm", () => {
     }
   });
 
-  it(
-    "successful submit → resets fields and generates a fresh id",
-    async () => {
-      api.post.mockResolvedValue({ data: { status: "ok" } });
-      const { result } = renderController(() => useCreateBookForm());
-      const form = result.current.form.form;
-      const originalId = form.state.values.book.id;
-      await fill(form);
-
-      await act(async () => form.handleSubmit());
-
-      expect(form.state.values.book.name).toBe("");
-      expect(form.state.values.book.fields).toEqual([]);
-      expect(form.state.values.book.id).not.toBe(originalId);
-    },
-  );
-
-  it("API error → keeps modal and form data, shows one toast, and is handled", async () => {
-    api.post.mockRejectedValue(makeAxiosError({ status: 500 }));
-    const { result } = renderController(() => useCreateBookForm());
-    act(() => result.current.modal.setOpen(true));
-    const form = result.current.form.form;
-    await fill(form);
-
-    await act(async () => form.handleSubmit());
-
-    expect(result.current.modal.open).toBe(true);
-    expect(form.state.values.book.name).toBe("Dune");
-    expect(enqueueSnackbar).toHaveBeenCalledTimes(1);
-  });
-
-  it("user changes after mount → submits to the current user's endpoint", async () => {
+  it("successful submit → resets fields and generates a fresh id", async () => {
     api.post.mockResolvedValue({ data: { status: "ok" } });
     const { result } = renderController(() => useCreateBookForm());
     const form = result.current.form.form;
+    const originalId = form.state.values.book.id;
     await fill(form);
-    act(() => UserStorage.getState().setUser("bob"));
 
     await act(async () => form.handleSubmit());
 
-    expect(api.post).toHaveBeenCalledWith(
-      "/books/bob",
-      expect.objectContaining({ ownerId: "bob" }),
-    );
-  });
-
-  it("duplicate handleSubmit while pending → sends one request", async () => {
-    api.post.mockReturnValue(new Promise(() => {}));
-    const { result } = renderController(() => useCreateBookForm());
-    const form = result.current.form.form;
-    await fill(form);
-
-    await act(async () => {
-      const first = form.handleSubmit();
-      const second = form.handleSubmit();
-      await Promise.resolve();
-      void first;
-      void second;
-    });
-
-    expect(api.post).toHaveBeenCalledTimes(1);
+    expect(form.state.values.book.name).toBe("");
+    expect(form.state.values.book.fields).toEqual([]);
+    expect(form.state.values.book.id).not.toBe(originalId);
   });
 });

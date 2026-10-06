@@ -33,7 +33,7 @@ export const useSignInForm = () => {
 
   useEffect(() => {
     form.reset();
-  }, [open]);
+  }, [form, open]);
 
   return {
     form: { form, Wrapper },

@@ -4,10 +4,13 @@ import { UserStorage } from "../../../entities/user/storage/user-storage.reposit
 import { api } from "../../../shared/testing/utils/api";
 import { buildBook } from "../../../shared/testing/utils/builders";
 import { deferred } from "../../../shared/testing/utils/deferred";
-import { renderController, signIn } from "../../../shared/testing/utils/test-utils";
+import {
+  renderController,
+  signIn,
+} from "../../../shared/testing/utils/test-utils";
+import { useBooksListController } from "../../books-list/model/books-list.controller";
 import { BookListMode } from "../../books-selector/model/books-mode-storage.interface";
 import { BookListStorage } from "../../books-selector/model/books-mode-storage.repository";
-import { useBooksListController } from "../../books-list/model/books-list.controller";
 import { useHeaderAccountController } from "../model/header-account.controller";
 
 describe("useHeaderAccountController", () => {
@@ -31,7 +34,7 @@ describe("useHeaderAccountController", () => {
     const { result } = renderController(() => useHeaderAccountController());
 
     expect(result.current.count).toBe(0);
-    expect(result.current.loading).toBe(false);
+    expect(result.current.loading).toBe(true);
 
     request.resolve({ data: [buildBook()] });
     await waitFor(() => expect(result.current.count).toBe(1));
@@ -40,9 +43,7 @@ describe("useHeaderAccountController", () => {
   it("empty response → zero; API error → retains zero", async () => {
     signIn("alice");
     api.get.mockResolvedValueOnce({ data: [] });
-    const { result } = renderController(() =>
-      useHeaderAccountController(),
-    );
+    const { result } = renderController(() => useHeaderAccountController());
 
     await waitFor(() => expect(api.get).toHaveBeenCalledTimes(1));
     expect(result.current.count).toBe(0);
