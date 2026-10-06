@@ -13,7 +13,7 @@ export const CreateBookMutation = mutationOptions({
     const key_private = ["books", { user: payload.user, isPrivate: true }];
 
     const updater = (slice: Book[] | undefined) => {
-      if (!slice) return [payload.book];
+      if (!slice) return undefined;
       return [...slice, payload.book];
     };
 

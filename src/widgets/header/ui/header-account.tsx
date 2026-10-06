@@ -18,7 +18,12 @@ export const HeaderAccount: FC = () => {
         </Text>
       </Flex>
       <Separator orientation={"vertical"} size={"2"} />
-      <IconButton variant={"soft"} onClick={onExit} size={"3"}>
+      <IconButton
+        aria-label="Sign out"
+        variant={"soft"}
+        onClick={onExit}
+        size={"3"}
+      >
         <ExitIcon />
       </IconButton>
     </Flex>

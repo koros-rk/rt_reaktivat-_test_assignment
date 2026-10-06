@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ComponentType, PropsWithChildren } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { FormWrapper } from "../components/FormWrapper";
+import { FormWrapper } from "../components/form-wrapper";
 
 const AppForm = ({ children }: PropsWithChildren) => <>{children}</>;
 

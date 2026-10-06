@@ -1,9 +1,10 @@
 import { act, waitFor } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { UserStorage } from "../../../entities/user/storage/user-storage.repository";
 import { api } from "../../../shared/testing/utils/api";
 import { buildBook } from "../../../shared/testing/utils/builders";
 import { deferred } from "../../../shared/testing/utils/deferred";
+import { renderControllerWithBoundary } from "../../../shared/testing/utils/render-with-error-boundary";
 import {
   renderController,
   signIn,
@@ -14,6 +15,8 @@ import { BookListStorage } from "../../books-selector/model/books-mode-storage.r
 import { useHeaderAccountController } from "../model/header-account.controller";
 
 describe("useHeaderAccountController", () => {
+  afterEach(() => vi.restoreAllMocks());
+
   it("signed-in user → requests private books and exposes their count", async () => {
     signIn("alice");
     api.get.mockResolvedValue({
@@ -26,7 +29,7 @@ describe("useHeaderAccountController", () => {
     expect(api.get).toHaveBeenCalledWith("/books/alice/private");
   });
 
-  it("pending request → count starts at zero and loading follows isPending", async () => {
+  it("pending request → loading is true until the private response arrives", async () => {
     signIn("alice");
     const request = deferred<{ data: ReturnType<typeof buildBook>[] }>();
     api.get.mockReturnValue(request.promise);
@@ -38,6 +41,27 @@ describe("useHeaderAccountController", () => {
 
     request.resolve({ data: [buildBook()] });
     await waitFor(() => expect(result.current.count).toBe(1));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+  });
+
+  it("onExit() → signs out and causes the unguarded hook to throw", async () => {
+    signIn("alice");
+    api.get.mockResolvedValue({ data: [] });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { result, onError } = renderControllerWithBoundary(() =>
+      useHeaderAccountController(),
+    );
+
+    act(() => result.current.onExit());
+
+    await waitFor(() => expect(UserStorage.getState().user).toBeNull());
+    await waitFor(() =>
+      expect(onError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringMatching(/authenticated screen/),
+        }),
+      ),
+    );
   });
 
   it("empty response → zero; API error → retains zero", async () => {

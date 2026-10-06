@@ -2,6 +2,7 @@ import { act, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { queryClient } from "../../../shared/api/query-client";
 import { api } from "../../../shared/testing/utils/api";
+import { seedBooks } from "../../../shared/testing/utils/books-cache";
 import {
   renderController,
   signIn,
@@ -158,6 +159,7 @@ describe("useCreateBookForm", () => {
 
   it("successful submit → updates public and private book caches", async () => {
     api.post.mockResolvedValue({ data: { status: "ok" } });
+    seedBooks("alice", [], []);
     const { result } = renderController(() => useCreateBookForm());
     const form = result.current.form.form;
     await fill(form);

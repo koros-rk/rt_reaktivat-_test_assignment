@@ -1,38 +1,11 @@
 import { Theme } from "@radix-ui/themes";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeAll, describe, expect, it } from "vitest";
+import { installRadixPolyfills } from "../../../shared/testing/utils/radix-polyfills";
 import { wrapper } from "../../../shared/testing/utils/test-utils";
 import { CreateBookModal } from "../ui/create-book-modal";
 
-beforeAll(() => {
-  class ResizeObserverStub {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  }
-
-  globalThis.ResizeObserver = ResizeObserverStub;
-  window.matchMedia ??= ((query: string) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener() {},
-    removeListener() {},
-    addEventListener() {},
-    removeEventListener() {},
-    dispatchEvent: () => false,
-  })) as typeof window.matchMedia;
-  Element.prototype.scrollIntoView ??= () => {};
-  if (!Element.prototype.hasPointerCapture) {
-    Element.prototype.hasPointerCapture = () => false;
-  }
-  if (!Element.prototype.setPointerCapture) {
-    Element.prototype.setPointerCapture = () => {};
-  }
-  if (!Element.prototype.releasePointerCapture) {
-    Element.prototype.releasePointerCapture = () => {};
-  }
-});
+beforeAll(installRadixPolyfills);
 
 describe("CreateBookModal", () => {
   const openModal = () => {
